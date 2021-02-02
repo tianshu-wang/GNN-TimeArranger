@@ -136,7 +136,7 @@ if __name__ == '__main__':
     lr_p = 1e-4
     train_t = True
 
-    # Load Whole Dataset
+    ### Load Whole Dataset ###
     SM,data,ra,dec,OIII4960,redshift=LoadUniverseMachine(0)
 
     field_center_x = -0.5
@@ -154,22 +154,7 @@ if __name__ == '__main__':
         return tuple(match.trimatch(pos[0],pos[1]))
     indices = tuple(map(wrap_trimatch,target_list))
 
-    ### SubRegions ###
-    hashes = np.array([hash(index) for index in indices])
-    hash_of_no_match = hash((2394,2394,2394))
-    hash_set = np.unique(hashes)
-    hash_set = np.delete(hash_set,np.where(hash_set==hash_of_no_match))
-    hash_nums = np.array([len(hashes[hashes==hash_set[i]]) for i in range(len(hash_set))])
-
-    '''
-    ### Subregions ###
-    all_data = []
-    for i in range(len(hash_set)):
-        real = OIII4960[hashes==hash_set[i]]
-        all_data.append(real)
-    '''
-
-    ### Fibers ###
+    # Fibers 
     all_data = [[] for i in range(2394)]
     for i in range(len(indices)):
         if OIII4960[i]>1.5:
@@ -178,6 +163,8 @@ if __name__ == '__main__':
                     all_data[j].append(OIII4960[i])
     dataset = Loader(all_data)
 
+    
+    ### Train GNN ###
     gnn = GNN().cuda()
     optimizer = optim.Adam(gnn.parameters(),lr=lr_t)
 
