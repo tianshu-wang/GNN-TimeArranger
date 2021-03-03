@@ -264,8 +264,8 @@ if __name__ == '__main__':
         gnn.zero_grad()
         for i_batch,graph in enumerate(dataloader):
             edge_attr,edge_index = gnn(graph,graph.batch)
-            loss,utils,overtime,num = Loss(edge_attr,graph,classes,c_t,total_time=30,damp=damp)
-        print(loss.item(),utils.item(),torch.max(overtime).item(),len(overtime[overtime>0]),num.item())
+            loss,utils,overtime = Loss(edge_attr,graph,classes,c_t,total_time=30,damp=damp)
+        print(loss.item(),utils.item(),torch.max(overtime).item(),len(overtime[overtime>0]))
         loss.backward()
         optimizer.step()
         with torch.no_grad():
